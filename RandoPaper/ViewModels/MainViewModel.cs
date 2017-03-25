@@ -16,11 +16,13 @@ namespace RandoPaper.ViewModels
         private BingSearch bSearch = new BingSearch();
         private JsonStrToClass jStrToClass = new JsonStrToClass();
         private IList<SearchResult> searchResults;
+        private SearchResult nextResult;
         private int respawn;
         private Style wpStyle;
 
 
         public ICommand SetRandomWPCommand { get; set; }
+        public ICommand SetNextWPCommand { get; set; }
 
 
         /// <summary>
@@ -39,6 +41,21 @@ namespace RandoPaper.ViewModels
                 RaisePropertyChanged("Count");
             }
         }
+
+        public SearchResult NextResult
+        {
+            get
+            {
+                return nextResult;
+            }
+            set
+            {
+                nextResult = value;
+                RaisePropertyChanged("NextResult");
+            }
+        }
+        
+                
         /// <summary>
         /// Time till next random wallpaper
         /// To be implemented last
@@ -104,29 +121,68 @@ namespace RandoPaper.ViewModels
 
         private void LoadCommands()
         {
-            SetRandomWPCommand = new CustomCommand(SetWallpaper, CanSet);
+            SetRandomWPCommand = new CustomCommand(SetRandomWallpaper, CanSet);
+            SetNextWPCommand = new CustomCommand(SetNextWallpaperCom, CanSet);
 
+        }
+
+        private void SetNextWallpaperCom(object obj)
+        {
+            SetNextWallpaper();
         }
 
         private bool CanSet(object obj)
         {
-            throw new NotImplementedException();
+            if (searchResults == null)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="obj"></param>
+        private void SetRandomWallpaper(object obj)
+        {
+            PopulateResultList();
+            SetNextWallpaper();
         }
 
-        private void SetWallpaper(object obj)
+        private void SetNextWallpaper()
+        {
+            Uri randomUri;
+            Random rando = new Random(DateTime.Now.Second);
+            if (nextResult == null)
+            {
+                GetNextResult();
+                randomUri = new Uri(NextResult.ContentUrl);
+                Wallpaper.Set(randomUri, WPStyle);
+                GetNextResult();
+            }
+            else
+            {
+                randomUri = new Uri(NextResult.ContentUrl);
+                Wallpaper.Set(randomUri, WPStyle);
+                GetNextResult();
+            }
+        }
+       
+
+        private void GetNextResult()
         {
             Random rando = new Random(DateTime.Now.Second);
-            Uri randPic = new Uri(searchResults[rando.Next(searchResults.Count)].ContentUrl);
-            Wallpaper.Set(randPic, WPStyle);
+            NextResult = searchResults[rando.Next(searchResults.Count)];
         }
 
-        public async void PopulateResultList()
+        private async void PopulateResultList()
         {
-           
             var result = await bSearch.MakeRequest();
-
             jStrToClass.ParseToList(result);
-
             searchResults = jStrToClass.TokenToResult();
         }
 
