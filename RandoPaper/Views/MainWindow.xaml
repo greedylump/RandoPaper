@@ -4,16 +4,68 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RandoPaper"
+        xmlns:WPModel="clr-namespace:WallPaperModel"
         xmlns:vm="clr-namespace:RandoPaper.ViewModels"
+        xmlns:System="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        FontStyle="Oblique"
+        FontWeight="ExtraBlack"
+        Title="RandoPaper" Height="350" Width="525"
+        Background="Gray" >
 
     <Window.DataContext>
         <vm:MainViewModel x:Name="MainViewModel" />
     </Window.DataContext>
+   
 
     <Grid>
-        
-        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Orientation="Vertical">
+            <StackPanel Orientation="Horizontal">
+                <Label Margin="3"
+                       VerticalAlignment="Center"
+                       Name="queryLabel"
+                       MinWidth="{Binding ActualWidth, ElementName=numberLabel}">Search Criteria</Label>
+                <TextBox Margin="3"
+                         Width="100"
+                         VerticalAlignment="Center"
+                         Name="queryTextBox">MyText</TextBox>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Label Margin="3"
+                       VerticalAlignment="Center"
+                       Name="numberLabel">Number of Results</Label>
+                <TextBox Margin="3"
+                         Width="100"
+                         VerticalAlignment="Center"
+                         Name="numberTextBox">MyText</TextBox>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Label Margin="3"
+                       VerticalAlignment="Center"
+                       Name="respawnLabel"
+                       MinWidth="{Binding ActualWidth, ElementName=numberLabel}">Respawn</Label>
+                <TextBox Margin="3"
+                         Width="100"
+                         VerticalAlignment="Center"
+                         Name="respawnTextBox">MyText</TextBox>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Label Margin="3"
+                       VerticalAlignment="Center"
+                       Name="styleLabel"
+                       MinWidth="{Binding ActualWidth, ElementName=numberLabel}">Wallpaper Style</Label>
+                <ComboBox Name="styleComboBox"
+                          SelectedIndex="0"
+                          SelectedValue="{Binding WPStyle, Mode=TwoWay}"
+                          ItemsSource="{Binding StyleTypes}" 
+                          MinWidth="{Binding ActualWidth, ElementName=respawnTextBox}"
+                          MaxHeight="{Binding ActualHeight, ElementName=respawnTextBox}"/>
+            </StackPanel>
+        </StackPanel>
     </Grid>
 </Window>

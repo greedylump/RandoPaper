@@ -112,6 +112,15 @@ namespace RandoPaper.ViewModels
 
         }
 
+        public IList<Style> StyleTypes
+        {
+            get
+            {
+                // Will result in a list like {"Tester", "Engineer"}
+                return Enum.GetValues(typeof(Style)).Cast<Style>().ToList<Style>();
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         public MainViewModel()
