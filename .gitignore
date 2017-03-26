@@ -91,6 +91,7 @@ ipch/
 *.sap
 # Secret Key File!
 app.config
+App.config
 # TFS 2012 Local Workspace
 $tf/
 

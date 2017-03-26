@@ -130,7 +130,7 @@ namespace RandoPaper.ViewModels
 
         private void LoadCommands()
         {
-            SetRandomWPCommand = new CustomCommand(SetRandomWallpaper, CanSet);
+            SetRandomWPCommand = new CustomCommand(SetRandomWallpaper, CanGet);
             SetNextWPCommand = new CustomCommand(SetNextWallpaperCom, CanSet);
 
         }
@@ -140,6 +140,10 @@ namespace RandoPaper.ViewModels
             SetNextWallpaper();
         }
 
+        private bool CanGet(object obj)
+        {
+                return true;
+        }
         private bool CanSet(object obj)
         {
             if (searchResults == null)
@@ -156,9 +160,9 @@ namespace RandoPaper.ViewModels
         /// 
         /// </summary>
         /// <param name="obj"></param>
-        private void SetRandomWallpaper(object obj)
+        private async void SetRandomWallpaper(object obj)
         {
-            PopulateResultList();
+            await PopulateResultList();
             SetNextWallpaper();
         }
 
@@ -188,7 +192,7 @@ namespace RandoPaper.ViewModels
             NextResult = searchResults[rando.Next(searchResults.Count)];
         }
 
-        private async void PopulateResultList()
+        private async Task PopulateResultList()
         {
             var result = await bSearch.MakeRequest();
             jStrToClass.ParseToList(result);
