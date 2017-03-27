@@ -6,17 +6,29 @@
         xmlns:local="clr-namespace:RandoPaper"
         xmlns:WPModel="clr-namespace:WallPaperModel"
         xmlns:vm="clr-namespace:RandoPaper.ViewModels"
-        xmlns:System="clr-namespace:System;assembly=mscorlib"
+        xmlns:con="clr-namespace:RandoPaper.Converter"
         mc:Ignorable="d"
         FontStyle="Oblique"
         FontWeight="ExtraBlack"
-        Title="RandoPaper" Height="350" Width="525"
+        Name="MainWindow1"
+        Title="RandoPaper"
+        
+        HorizontalContentAlignment="Right"
+        Height="350"
+        Width="525"
         Background="Gray" >
+
+    
+
 
     <Window.DataContext>
         <vm:MainViewModel x:Name="MainViewModel" />
     </Window.DataContext>
-   
+    <Window.Resources>
+        <ResourceDictionary>
+            <con:ImageConverter x:Key="ImageConverter"></con:ImageConverter>
+        </ResourceDictionary>
+    </Window.Resources>
 
     <Grid>
         <Grid.ColumnDefinitions>
@@ -65,19 +77,31 @@
                 <ComboBox Name="styleComboBox"
                           SelectedIndex="0"
                           SelectedValue="{Binding WPStyle, Mode=TwoWay}"
-                          ItemsSource="{Binding StyleTypes}" 
+                          ItemsSource="{Binding StyleTypes}"
                           MinWidth="{Binding ActualWidth, ElementName=respawnTextBox}"
-                          MaxHeight="{Binding ActualHeight, ElementName=respawnTextBox}"/>
+                          MaxHeight="{Binding ActualHeight, ElementName=respawnTextBox}" />
             </StackPanel>
-            <Button Content="Get Me Wallpaper!"
+            <Button Content="Get Me Random Wallpaper!"
                     Name="getButton"
                     Margin="10,30,10,0"
-                    Command="{Binding SetRandomWPCommand}"/>
+                    Command="{Binding SetRandomWPCommand}" />
             <Button Content="Apply Next Wallpaper!"
                     Name="nextButton"
                     Margin="10,30,10,0"
                     Command="{Binding SetNextWPCommand}" />
         </StackPanel>
-        
+        <StackPanel Orientation="Vertical"
+                    Grid.Column="1">
+            <Image Grid.Column="1"
+                   VerticalAlignment="Center"
+                   Source="{Binding NextResult.ThumbnailUrl, Converter={StaticResource ImageConverter}}" />
+            <TextBlock HorizontalAlignment="Center"
+                       Text="{Binding NextResult.Name}"
+                       Height="Auto" />
+
+        </StackPanel>
+
+
+
     </Grid>
 </Window>

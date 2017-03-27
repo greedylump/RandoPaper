@@ -3,9 +3,12 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Security.Permissions;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using System.Windows.Threading;
 using WallPaperModel;
 using static WallPaperModel.Wallpaper;
 
@@ -19,6 +22,10 @@ namespace RandoPaper.ViewModels
         private SearchResult nextResult;
         private int respawn;
         private Style wpStyle;
+        //public Timer respawnTimer;
+        //private DispatcherTimer dispatcherTimer = new DispatcherTimer();
+        
+
 
 
         public ICommand SetRandomWPCommand { get; set; }
@@ -37,8 +44,17 @@ namespace RandoPaper.ViewModels
 
             set
             {
-                bSearch.Count = value;
-                RaisePropertyChanged("Count");
+                if(Int32.Parse(value)<1)
+                {
+                    bSearch.Count = "1";
+                    RaisePropertyChanged("Count");
+                }
+                else
+                {
+                    bSearch.Count = value;
+                    RaisePropertyChanged("Count");
+                }
+               
             }
         }
 
@@ -69,8 +85,17 @@ namespace RandoPaper.ViewModels
 
             set
             {
-                respawn = value;
-                RaisePropertyChanged("Respawn");
+                if(value<1)
+                {
+                    respawn = 1;
+                    RaisePropertyChanged("Respawn");
+                }
+                else
+                {
+                    respawn = value;
+                    RaisePropertyChanged("Respawn");
+                }
+               
             }
         }
         /// <summary>
@@ -91,7 +116,7 @@ namespace RandoPaper.ViewModels
         }
 
         /// <summary>
-        /// Style the wallpaper is layed out. Tiled,
+        /// Style the style wallpaper is layed out. Tiled,
         ///    Centered,
         ///    Stretched,
         ///    Fill,
@@ -116,7 +141,6 @@ namespace RandoPaper.ViewModels
         {
             get
             {
-                // Will result in a list like {"Tester", "Engineer"}
                 return Enum.GetValues(typeof(Style)).Cast<Style>().ToList<Style>();
             }
         }
@@ -127,6 +151,13 @@ namespace RandoPaper.ViewModels
         {
             LoadCommands();
         }
+
+        /* Dispatch Timer majorly screwed up performance
+        private void dispatcherTimer_Tick(object sender, EventArgs e)
+        {
+            SetNextWallpaper();
+        }
+        */
 
         private void LoadCommands()
         {
@@ -156,14 +187,12 @@ namespace RandoPaper.ViewModels
             }
 
         }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="obj"></param>
+        
         private async void SetRandomWallpaper(object obj)
         {
             await PopulateResultList();
             SetNextWallpaper();
+           
         }
 
         private void SetNextWallpaper()
@@ -176,6 +205,7 @@ namespace RandoPaper.ViewModels
                 randomUri = new Uri(NextResult.ContentUrl);
                 Wallpaper.Set(randomUri, WPStyle);
                 GetNextResult();
+
             }
             else
             {
@@ -188,8 +218,8 @@ namespace RandoPaper.ViewModels
 
         private void GetNextResult()
         {
-            Random rando = new Random(DateTime.Now.Second);
-            NextResult = searchResults[rando.Next(searchResults.Count)];
+                Random rando = new Random(DateTime.Now.Second);
+                NextResult = searchResults[rando.Next(searchResults.Count)];
         }
 
         private async Task PopulateResultList()
