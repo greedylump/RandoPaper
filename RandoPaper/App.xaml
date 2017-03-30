@@ -5,6 +5,27 @@
              
              StartupUri="Views/MainWindow.xaml">
     <Application.Resources>
+        <ResourceDictionary>
+
+            <Style x:Key="ForegroundInheritanceFixStyle"
+                   TargetType="Control">
+                <Setter Property="Foreground"
+                        Value="{Binding RelativeSource={RelativeSource AncestorType={x:Type FrameworkElement}}, Path=(TextElement.Foreground)}" />
+            </Style>
+
+            <Style TargetType="{x:Type Label}"
+                   BasedOn="{StaticResource ForegroundInheritanceFixStyle}">
+            </Style>
+
+            <Style TargetType="{x:Type TextBox}"
+                   BasedOn="{StaticResource ForegroundInheritanceFixStyle}">
+            </Style>
+            <Style TargetType="{x:Type Button}"
+                   BasedOn="{StaticResource ForegroundInheritanceFixStyle}">
+            </Style>
+          
+
+        </ResourceDictionary>
          
     </Application.Resources>
 </Application>
