@@ -22,14 +22,17 @@ namespace RandoPaper.ViewModels
         private SearchResult nextResult;
         private int respawn;
         private Style wpStyle;
-        //public Timer respawnTimer;
-        //private DispatcherTimer dispatcherTimer = new DispatcherTimer();
-        
+        private TimeSpan span;
+        private DispatcherTimer respawnTimer; 
+
+
+
 
 
 
         public ICommand SetRandomWPCommand { get; set; }
         public ICommand SetNextWPCommand { get; set; }
+        public ICommand SkipThisWPCommand { get; set; }
 
 
         /// <summary>
@@ -88,11 +91,13 @@ namespace RandoPaper.ViewModels
                 if(value<1)
                 {
                     respawn = 1;
+                    span = new TimeSpan(0, respawn,0);
                     RaisePropertyChanged("Respawn");
                 }
                 else
                 {
                     respawn = value;
+                    span = new TimeSpan(0, respawn, 0);
                     RaisePropertyChanged("Respawn");
                 }
                
@@ -150,20 +155,29 @@ namespace RandoPaper.ViewModels
         public MainViewModel()
         {
             LoadCommands();
+            respawnTimer = new DispatcherTimer();
+            respawnTimer.Interval = new TimeSpan(0, 10, 0);
+            respawnTimer.Tick += dispatcherTimer_Tick;
         }
 
-        /* Dispatch Timer majorly screwed up performance
+        
         private void dispatcherTimer_Tick(object sender, EventArgs e)
         {
             SetNextWallpaper();
         }
-        */
+        
 
         private void LoadCommands()
         {
             SetRandomWPCommand = new CustomCommand(SetRandomWallpaper, CanGet);
             SetNextWPCommand = new CustomCommand(SetNextWallpaperCom, CanSet);
+            SkipThisWPCommand = new CustomCommand(SkipThisWP, CanSet);
 
+        }
+
+        private void SkipThisWP(object obj)
+        {
+            GetNextResult();
         }
 
         private void SetNextWallpaperCom(object obj)
@@ -175,6 +189,7 @@ namespace RandoPaper.ViewModels
         {
                 return true;
         }
+
         private bool CanSet(object obj)
         {
             if (searchResults == null)
@@ -197,24 +212,31 @@ namespace RandoPaper.ViewModels
 
         private void SetNextWallpaper()
         {
-            Uri randomUri;
-            Random rando = new Random(DateTime.Now.Second);
+            if(respawnTimer.IsEnabled)
+            {
+                respawnTimer.Stop();
+            }
+            respawnTimer.Interval = span;
+            respawnTimer.Start();
             if (nextResult == null)
             {
                 GetNextResult();
-                randomUri = new Uri(NextResult.ContentUrl);
-                Wallpaper.Set(randomUri, WPStyle);
-                GetNextResult();
+                SetAndGetNext();
 
             }
             else
             {
-                randomUri = new Uri(NextResult.ContentUrl);
-                Wallpaper.Set(randomUri, WPStyle);
-                GetNextResult();
+                SetAndGetNext();
             }
         }
-       
+
+        private void SetAndGetNext()
+        {
+            Uri randomUri = new Uri(NextResult.ContentUrl);
+            Wallpaper.Set(randomUri, WPStyle);
+            GetNextResult();
+           
+        }
 
         private void GetNextResult()
         {

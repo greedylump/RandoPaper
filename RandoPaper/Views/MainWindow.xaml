@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RandoPaper"
-        xmlns:WPModel="clr-namespace:WallPaperModel"
+        
         xmlns:vm="clr-namespace:RandoPaper.ViewModels"
         xmlns:con="clr-namespace:RandoPaper.Converter"
         mc:Ignorable="d"
@@ -16,7 +16,8 @@
         HorizontalContentAlignment="Right"
         Height="350"
         Width="525"
-        Background="Gray" >
+        Background="Gray"
+        Foreground="#FFFAFAFA">
 
     
 
@@ -29,6 +30,8 @@
             <con:ImageConverter x:Key="ImageConverter"></con:ImageConverter>
         </ResourceDictionary>
     </Window.Resources>
+    
+    
 
     <Grid>
         <Grid.ColumnDefinitions>
@@ -79,16 +82,28 @@
                           SelectedValue="{Binding WPStyle, Mode=TwoWay}"
                           ItemsSource="{Binding StyleTypes}"
                           MinWidth="{Binding ActualWidth, ElementName=respawnTextBox}"
-                          MaxHeight="{Binding ActualHeight, ElementName=respawnTextBox}" />
+                          MaxHeight="{Binding ActualHeight, ElementName=respawnTextBox}"
+                          Foreground="#FFE5E5E5"
+                          Background="#FF383635">
+                </ComboBox>
             </StackPanel>
             <Button Content="Get Me Random Wallpaper!"
                     Name="getButton"
                     Margin="10,30,10,0"
-                    Command="{Binding SetRandomWPCommand}" />
+                    Command="{Binding SetRandomWPCommand}"
+                    Background="#FF383635" />
             <Button Content="Apply Next Wallpaper!"
                     Name="nextButton"
                     Margin="10,30,10,0"
-                    Command="{Binding SetNextWPCommand}" />
+                    Command="{Binding SetNextWPCommand}"
+                    Background="#FF383635"/>
+            <Button Content="Skip This Wallpaper!"
+                    Name="skipButton"
+                    Margin="10,30,10,0"
+                    Command="{Binding SkipThisWPCommand}"
+                    Background="#FF383635" />
+
+            
         </StackPanel>
         <StackPanel Orientation="Vertical"
                     Grid.Column="1">
