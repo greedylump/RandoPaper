@@ -17,7 +17,7 @@
         Height="350"
         Width="525"
         Background="Gray"
-        Foreground="#FFFAFAFA">
+        Foreground="#FF383635">
 
     
 
@@ -83,8 +83,8 @@
                           ItemsSource="{Binding StyleTypes}"
                           MinWidth="{Binding ActualWidth, ElementName=respawnTextBox}"
                           MaxHeight="{Binding ActualHeight, ElementName=respawnTextBox}"
-                          Foreground="#FFE5E5E5"
-                          Background="#FF383635">
+                          Foreground="#FF383635"
+                          >
                 </ComboBox>
             </StackPanel>
             <Button Content="Get Me Random Wallpaper!"
@@ -111,6 +111,7 @@
                    VerticalAlignment="Center"
                    Source="{Binding NextResult.ThumbnailUrl, Converter={StaticResource ImageConverter}}" />
             <TextBlock HorizontalAlignment="Center"
+                       TextWrapping="Wrap"
                        Text="{Binding NextResult.Name}"
                        Height="Auto" />
 

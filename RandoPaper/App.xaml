@@ -20,9 +20,10 @@
             <Style TargetType="{x:Type TextBox}"
                    BasedOn="{StaticResource ForegroundInheritanceFixStyle}">
             </Style>
-            <Style TargetType="{x:Type Button}"
+            <Style TargetType="{x:Type ComboBox}"
                    BasedOn="{StaticResource ForegroundInheritanceFixStyle}">
             </Style>
+           
           
 
         </ResourceDictionary>

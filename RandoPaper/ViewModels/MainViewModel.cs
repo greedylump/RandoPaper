@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Net;
 using System.Security.Permissions;
 using System.Text;
 using System.Threading;
@@ -233,7 +234,17 @@ namespace RandoPaper.ViewModels
         private void SetAndGetNext()
         {
             Uri randomUri = new Uri(NextResult.ContentUrl);
-            Wallpaper.Set(randomUri, WPStyle);
+            try
+            {
+                Wallpaper.Set(randomUri, WPStyle);
+            }
+            catch(WebException we)
+            {
+                GetNextResult();
+                randomUri = new Uri(NextResult.ContentUrl);
+                Wallpaper.Set(randomUri, WPStyle);
+            }
+           
             GetNextResult();
            
         }
