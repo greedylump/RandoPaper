@@ -8,6 +8,7 @@ using System.Security.Permissions;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
 using WallPaperModel;
@@ -22,9 +23,15 @@ namespace RandoPaper.ViewModels
         private IList<SearchResult> searchResults;
         private SearchResult nextResult;
         private int respawn;
-        private Style wpStyle;
+        private PaperStyle wpStyle;
         private TimeSpan span;
-        private DispatcherTimer respawnTimer; 
+        private DispatcherTimer respawnTimer;
+        private SearchResult defaultResult = new SearchResult
+        {
+            Name = "Error Default",
+            ContentUrl = "https://www.smashingmagazine.com/images/404-error-pages/gog.jpg",
+            ThumbnailUrl = "https://www.smashingmagazine.com/images/404-error-pages/gog.jpg"
+        };
 
 
 
@@ -48,7 +55,7 @@ namespace RandoPaper.ViewModels
 
             set
             {
-                if(Int32.Parse(value)<1)
+                if(Int32.Parse(value)<1 || value =="" || value ==null)
                 {
                     bSearch.Count = "1";
                     RaisePropertyChanged("Count");
@@ -89,7 +96,7 @@ namespace RandoPaper.ViewModels
 
             set
             {
-                if(value<1)
+                if(value<1 )
                 {
                     respawn = 1;
                     span = new TimeSpan(0, respawn,0);
@@ -129,7 +136,7 @@ namespace RandoPaper.ViewModels
         ///    Fit,
         ///    Span
         /// </summary>
-        public Style WPStyle
+        public PaperStyle WPStyle
         {
             get
             {
@@ -143,11 +150,11 @@ namespace RandoPaper.ViewModels
 
         }
 
-        public IList<Style> StyleTypes
+        public IList<PaperStyle> StyleTypes
         {
             get
             {
-                return Enum.GetValues(typeof(Style)).Cast<Style>().ToList<Style>();
+                return Enum.GetValues(typeof(PaperStyle)).Cast<PaperStyle>().ToList<PaperStyle>();
             }
         }
 
@@ -251,15 +258,44 @@ namespace RandoPaper.ViewModels
 
         private void GetNextResult()
         {
-                Random rando = new Random(DateTime.Now.Second);
-                NextResult = searchResults[rando.Next(searchResults.Count)];
+            Random rando = new Random(DateTime.Now.Second);
+            NextResult = searchResults[rando.Next(searchResults.Count)];
+           
+
+
+
+
         }
 
         private async Task PopulateResultList()
         {
-            var result = await bSearch.MakeRequest();
-            jStrToClass.ParseToList(result);
-            searchResults = jStrToClass.TokenToResult();
+            if(Query=="" || Query==null)
+            {
+                Query = "OctoCat";
+            }
+            string result;
+            try
+            {
+                result = await bSearch.MakeRequest();
+                jStrToClass.ParseToList(result);
+                searchResults = jStrToClass.TokenToResult();
+            }
+            catch(WebException e)
+            {
+                NextResult = defaultResult;
+                searchResults = new List<SearchResult>();
+                searchResults.Add(NextResult);
+                /*Trying a different approach for now
+                MessageBoxResult message = MessageBox.Show(e.Message, "Shut Down?", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                if (message == MessageBoxResult.Yes)
+                {
+                    Application.Current.Shutdown();
+                }
+                */
+            }
+
+            
+            
         }
 
         private void RaisePropertyChanged(string propertyName)
